@@ -1,5 +1,5 @@
 // Alex Oliva
-// 6/5/2022
+// 6/3/2022
 
 import java.awt.Color;
 import java.awt.Font;
@@ -41,12 +41,12 @@ public class Game extends JFrame {
     private JLabel highScoreLbl;
     private JLabel currentScoreLbl;
     private JPanel gamePanel;
-    private JLabel startText;
     private JLabel apple;
 
     public int highScore;
     public int currentScore = 0;
 
+    // spawns an apple on the board
     private void spawnApple() {
         int x = rand.nextInt(60,gamePanel.getWidth()-60);
         int y = rand.nextInt(60,gamePanel.getHeight()-60);
@@ -66,6 +66,7 @@ public class Game extends JFrame {
         gamePanel.repaint();
     }
 
+    // updates the current score and high score
     private void updateScore() throws IOException {
         currentScore = dots.size();
         if (currentScore > highScore) {
@@ -78,13 +79,14 @@ public class Game extends JFrame {
         currentScoreLbl.setText("Current Score: " + highScore);
     }
 
-    //https://zetcode.com/javagames/collision/
+    // reference: https://zetcode.com/javagames/collision/
+    // checks if label is colliding with different label
     private boolean isCollision(JLabel lb1, JLabel lb2) {
         return lb1.getBounds().intersects(lb2.getBounds());
     }
-
+    
+    // checks if the head is colliding with self or wall
     private boolean isCollidingWithSelfOrWall() {
-      // checks if the head is colliding with self or wall
       for (int i = 2; i<dots.size(); i++) {
           if (head.getBounds().intersects(dots.get(i).getLabel().getBounds())) {
               System.out.println("hit self");
@@ -102,12 +104,20 @@ public class Game extends JFrame {
       return false;
     }
 
+    // ran when game over
     private void gameOver() {
         running = false;
-        startText.setText("Game Over!");
-        startText.setVisible(true);
+
+        JLabel gameOverLbl = new JLabel("Game Over!");
+        gameOverLbl.setForeground(new Color(0, 0, 0));
+        gameOverLbl.setHorizontalAlignment(SwingConstants.CENTER);
+        gameOverLbl.setVerticalAlignment(SwingConstants.CENTER);
+        gameOverLbl.setFont(new Font("Century Gothic", Font.BOLD, 20));
+        gameOverLbl.setBounds(-32, 0, 602, 47);
+        gamePanel.add(gameOverLbl);
     }
 
+    // creates snake before game is ran
     private void constructSnake() {
         Position startingPos = new Position(268, 273);
         positionList.add(startingPos);
@@ -117,7 +127,7 @@ public class Game extends JFrame {
         head.setBounds((int)startingPos.getX(), (int)startingPos.getY(), DOT_SIZE, DOT_SIZE);
         head.setForeground(new Color(235,235,235));
 
-        //reference: https://stackoverflow.com/questions/16343098/resize-a-picture-to-fit-a-jlabel
+        // reference: https://stackoverflow.com/questions/16343098/resize-a-picture-to-fit-a-jlabel
         BufferedImage img;
         try {
             img = ImageIO.read(new File("imgs\\RedCircle.png"));
@@ -127,7 +137,6 @@ public class Game extends JFrame {
             e.printStackTrace();
         }
         head.setOpaque(false);
-        //
 
         gamePanel.add(head);
 
@@ -142,6 +151,7 @@ public class Game extends JFrame {
         }
     }
 
+    // constructor that loads the Gui
     public Game() {
         addKeyListener(new TAdapter());
         setTitle("Snake Game");
@@ -166,14 +176,6 @@ public class Game extends JFrame {
         gamePanel.setBounds(32, 105, 535, 546);
         gamePanel.setLayout(null);
         contentPane.add(gamePanel);
-
-        startText = new JLabel("Press E to start");
-        startText.setForeground(new Color(0, 0, 0));
-        startText.setHorizontalAlignment(SwingConstants.CENTER);
-        startText.setVerticalAlignment(SwingConstants.CENTER);
-        startText.setFont(new Font("Century Gothic", Font.BOLD, 20));
-        startText.setBounds(-32, 0, 602, 47);
-        gamePanel.add(startText);
 
         highScoreLbl = new JLabel("High Score: 0");
         highScoreLbl.setForeground(new Color(0, 0, 0));
@@ -210,13 +212,8 @@ public class Game extends JFrame {
         highScoreLbl.setText("High Score: " + highScore);
     }
 
-    public void setDirection(Direction dir) {
-        currrentDirection = dir;
-    }
-
-
+    // is called when the game starts and handles movement
     public void run() throws IOException, InterruptedException {
-        startText.setVisible(false);
         constructSnake();
         spawnApple();
         running = true;
@@ -255,7 +252,8 @@ public class Game extends JFrame {
         }
     }
 
-    //reference: https://zetcode.com/javagames/movingsprites/
+    // reference: https://zetcode.com/javagames/movingsprites/
+    // listens for key pressed events
     private class TAdapter extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent event) {
@@ -270,7 +268,7 @@ public class Game extends JFrame {
                 } else if (key == KeyEvent.VK_DOWN && currrentDirection.getY() != 1) {
                     currrentDirection.set(0,1);
                 }
-            } 
+            }
         }
     }
 }
