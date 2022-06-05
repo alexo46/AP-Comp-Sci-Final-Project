@@ -76,7 +76,7 @@ public class Game extends JFrame {
             }
             highScoreLbl.setText("High Score: " + highScore);
         }
-        currentScoreLbl.setText("Current Score: " + highScore);
+        currentScoreLbl.setText("Current Score: " + currentScore);
     }
 
     // reference: https://zetcode.com/javagames/collision/
