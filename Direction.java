@@ -1,5 +1,5 @@
 // Alex Oliva
-// 6/5/2022
+// 6/3/2022
 
 public class Direction {
     public double x;
