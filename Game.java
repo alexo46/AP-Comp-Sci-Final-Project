@@ -24,7 +24,7 @@ import javax.swing.border.EmptyBorder;
 
 public class Game extends JFrame {
     public static final int STARTING_DOTS = 2; // number of dots present on start
-    public static final int RENDER_TIME = 100; // time per game update
+    public static final int RENDER_TIME = 250; // time per game update
     public static final int DOT_SIZE = 30; // size of the dot
     public static final int DOT_DISTANCE = 25; // distance the dot travels per step
     public static final int MAX_DOTS = 500; // maximum amount of dots
@@ -151,10 +151,10 @@ public class Game extends JFrame {
             Position pos = new Position(268, 273 + (DOT_DISTANCE * i)); // dot position
             Dot dot = new Dot((int) pos.getX(), (int) pos.getY(), DOT_SIZE); // dot object
 
-            gamePanel.add(dot.getLabel());
-            gamePanel.repaint();
-            dots.add(dot);
-            positionList.add(pos);
+            gamePanel.add(dot.getLabel()); // adds dot object to game panel
+            gamePanel.repaint(); // allows for dot to be visible on gamePanel
+            dots.add(dot); // adds dot to dot arraylist
+            positionList.add(pos); // adds position to positionList
         }
     }
 
@@ -228,35 +228,35 @@ public class Game extends JFrame {
         running = true; // allows game to run
 
         while (running) { // while running do. when run
-            Thread.sleep(250);
-            int headX = head.getX();
-            int headY = head.getY();
+            Thread.sleep(RENDER_TIME); 
+            int headX = head.getX(); // head x position
+            int headY = head.getY(); // head y position
 
-            Position headPosition = new Position(headX + (currrentDirection.getX()*DOT_DISTANCE), headY + (currrentDirection.getY()*DOT_DISTANCE));
-            head.setBounds((int) headPosition.getX(), (int) headPosition.getY(), DOT_SIZE, DOT_SIZE);
+            Position headPosition = new Position(headX + (currrentDirection.getX()*DOT_DISTANCE), headY + (currrentDirection.getY()*DOT_DISTANCE)); // new head position of snake
+            head.setBounds((int) headPosition.getX(), (int) headPosition.getY(), DOT_SIZE, DOT_SIZE); // sets the head position of the snake
 
             for (int i = 0; i<dots.size(); i++) {
                 JLabel dot = dots.get(i).getLabel();
-                Position pos = positionList.get(i);
-                dot.setBounds((int) pos.getX(),(int) pos.getY(), DOT_SIZE, DOT_SIZE);
+                Position pos = positionList.get(i); // gets the positionList position at index = i
+                dot.setBounds((int) pos.getX(),(int) pos.getY(), DOT_SIZE, DOT_SIZE); // sets the position of dot to pos
             }
 
-            positionList.add(0, headPosition);
+            positionList.add(0, headPosition); // adds the new head position to the positionList index at 0
 
-            if (isCollision(head, apple)) {
-                gamePanel.remove(apple);
-                updateScore();
+            if (isCollision(head, apple)) { // checks if head collides with apple
+                gamePanel.remove(apple); // removes the apple
+                updateScore(); // updates high and current scores
                 
-                Position dotPos = positionList.get(dots.size()+1);
-                Dot dot = new Dot((int)dotPos.getX(), (int)dotPos.getY(), DOT_SIZE);
-                dots.add(dot);
-                gamePanel.add(dot.getLabel());
-                spawnApple();
-                gamePanel.repaint();
+                Position dotPos = positionList.get(dots.size()+1); // gets dot position for new dot
+                Dot dot = new Dot((int)dotPos.getX(), (int)dotPos.getY(), DOT_SIZE); // creates new dot
+                dots.add(dot); // adds to array list
+                gamePanel.add(dot.getLabel()); // adds to gamePanel
+                spawnApple(); // spawns a new apple elsewhere
+                gamePanel.repaint(); // allows for player to see the apple. ( apple doesn't appear without running gamePanel.repaint(); )
             }
             
-            if (isCollidingWithSelfOrWall()) {
-              gameOver();
+            if (isCollidingWithSelfOrWall()) { // checks to see if the snake is colliding with itself, or if it is out of the gamePanel boundaries.
+              gameOver(); // game over method
             }
         }
     }
