@@ -111,8 +111,9 @@ public class Game extends JFrame {
 
     // ran when game over
     private void gameOver() {
-        running = false;
-
+        running = false; // stops updating game
+    
+        // creates new game over label
         JLabel gameOverLbl = new JLabel("Game Over!");
         gameOverLbl.setForeground(new Color(0, 0, 0));
         gameOverLbl.setHorizontalAlignment(SwingConstants.CENTER);
@@ -124,15 +125,16 @@ public class Game extends JFrame {
 
     // creates snake before game is ran
     private void constructSnake() {
-        Position startingPos = new Position(268, 273);
+        Position startingPos = new Position(268, 273); // snake head's starting position
         positionList.add(startingPos);
 
-        head = new JLabel();
+        head = new JLabel(); // creates head of the snake
         head.setName("head");
         head.setBounds((int)startingPos.getX(), (int)startingPos.getY(), DOT_SIZE, DOT_SIZE);
         head.setForeground(new Color(235,235,235));
 
         // reference: https://stackoverflow.com/questions/16343098/resize-a-picture-to-fit-a-jlabel
+        // sets snake's image to the red circle image.
         BufferedImage img;
         try {
             img = ImageIO.read(new File("imgs\\RedCircle.png"));
@@ -145,9 +147,9 @@ public class Game extends JFrame {
 
         gamePanel.add(head);
 
-        for (int i = 1; i <= STARTING_DOTS; i++) {
-            Position pos = new Position(268, 273 + (DOT_DISTANCE * i));
-            Dot dot = new Dot((int) pos.getX(), (int) pos.getY(), DOT_SIZE);
+        for (int i = 1; i <= STARTING_DOTS; i++) { // constructs the body of the snake
+            Position pos = new Position(268, 273 + (DOT_DISTANCE * i)); // dot position
+            Dot dot = new Dot((int) pos.getX(), (int) pos.getY(), DOT_SIZE); // dot object
 
             gamePanel.add(dot.getLabel());
             gamePanel.repaint();
@@ -158,38 +160,39 @@ public class Game extends JFrame {
 
     // constructor that loads the Gui
     public Game() {
-        addKeyListener(new TAdapter());
+        addKeyListener(new TAdapter()); // listens for keys pressed on the window
         setTitle("Snake Game");
         setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 608, 720);
 
+        // content pane that is responsbile for holdng the GUI content
         JPanel contentPane = new JPanel();
         contentPane.setBackground(new Color(255,255,255));
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(null);
 
-        JLabel title = new JLabel("Snake Game");
+        JLabel title = new JLabel("Snake Game"); // game title at the top of the screen
         title.setForeground(new Color(0, 0, 0));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         title.setFont(new Font("Century Gothic", Font.BOLD, 20));
         title.setBounds(0, 0, 602, 47);
         contentPane.add(title);
   
-        gamePanel = new JPanel();
+        gamePanel = new JPanel(); // panel that holds all the game GUIs
         gamePanel.setBackground(new Color(235,235,235));
         gamePanel.setBounds(32, 105, 535, 546);
         gamePanel.setLayout(null);
         contentPane.add(gamePanel);
 
-        highScoreLbl = new JLabel("High Score: 0");
+        highScoreLbl = new JLabel("High Score: 0"); // initalizes high score label
         highScoreLbl.setForeground(new Color(0, 0, 0));
         highScoreLbl.setHorizontalAlignment(SwingConstants.LEFT);
         highScoreLbl.setFont(new Font("Century Gothic", Font.BOLD, 20));
         highScoreLbl.setBounds(30, 30, 602, 47);
         contentPane.add(highScoreLbl);
 
-        currentScoreLbl = new JLabel("Current Score: 0");
+        currentScoreLbl = new JLabel("Current Score: 0"); // initalizes current score label
         currentScoreLbl.setForeground(new Color(0, 0, 0));
         currentScoreLbl.setHorizontalAlignment(SwingConstants.RIGHT);
         currentScoreLbl.setFont(new Font("Century Gothic", Font.BOLD, 20));
@@ -197,16 +200,17 @@ public class Game extends JFrame {
         contentPane.add(currentScoreLbl);
 
         setContentPane(contentPane);
-
+        
+        // updating high score label and variable
         try {
             File highScoreFile = new File(HIGH_SCORE_PATH);
-            if (highScoreFile.createNewFile()) {
+            if (highScoreFile.createNewFile()) { // creates a new high score file if one doesn't exist and sets highscore to 0
                try (FileWriter writer = new FileWriter(HIGH_SCORE_PATH)) {
                 writer.write("0");
                 highScore = 0;
                }
             } else {
-                Scanner scan = new Scanner(highScoreFile);
+                Scanner scan = new Scanner(highScoreFile); // else it reads the high score file and sets the highscore variable to the file contents
                 int score = scan.nextInt();
                 highScore = score;
                 scan.close();
@@ -214,16 +218,16 @@ public class Game extends JFrame {
         } catch (IOException e) {
         e.printStackTrace();
         }
-        highScoreLbl.setText("High Score: " + highScore);
+        highScoreLbl.setText("High Score: " + highScore); // updates the highscore label
     }
 
     // is called when the game starts and handles movement
     public void run() throws IOException, InterruptedException {
-        constructSnake();
-        spawnApple();
-        running = true;
+        constructSnake(); // constructs the snake when the game is ran
+        spawnApple(); // spawns an apple in a random area within gamePanel
+        running = true; // allows game to run
 
-        while (running) {
+        while (running) { // while running do. when run
             Thread.sleep(250);
             int headX = head.getX();
             int headY = head.getY();
