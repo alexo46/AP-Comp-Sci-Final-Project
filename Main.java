@@ -1,6 +1,8 @@
 // Alex Oliva
 // 6/3/2022
 
+// this file runs first, and starts the game.
+
 import java.io.IOException;
 
 public class Main {
